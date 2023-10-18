@@ -8,72 +8,71 @@ public class CinemaTicketBookingApp extends JFrame {
     private int total = 0;
     private final int VIP_PRICE = 20;
     private final int NORMAL_PRICE = 10;
+    private JLabel totalLabel;
+    private JLabel screen;
+    private JButton check;
+    private int handleDoneButtonClick() {
+        // Do whatever you want with the total value when the Done button is clicked
+        return total;
+    }
+    public int getTotal() {
+        return total;
+    }
     public CinemaTicketBookingApp() {
         // Set the layout manager for the frame
-        setLayout(new GridLayout(4, 4, 20, 20)); // 4 rows, 4 columns, 20 pixels horizontal and vertical gap
+        setLayout(new GridLayout(6, 5, 20, 20)); // Increased rows to accommodate the total label
 
-        // Create a JLabel to represent the cinema screen and merge all columns
-        JLabel screenLabel = new JLabel("Cinema Screen");
-        screenLabel.setHorizontalAlignment(JLabel.CENTER); // Center the text
-        screenLabel.setVerticalAlignment(JLabel.CENTER); // Center the text vertically
-        screenLabel.setForeground(Color.WHITE); // Set text color to white
-
-        // Set background color for the cinema screen label
-        screenLabel.setOpaque(true);
-        screenLabel.setBackground(Color.BLACK);
-
-        // Merge all columns in the first row
-        add(screenLabel);
-        add(new JLabel()); // Empty placeholder
+        screen = new JLabel("Cinema Screen");
+        screen.setHorizontalAlignment(JLabel.CENTER);
+        add(new JLabel());
+        add(new JLabel());
+        add(screen);
         add(new JLabel()); // Empty placeholder
         add(new JLabel()); // Empty placeholder
 
-
+        int dem = 1;
         // Create buttons and add them to the frame
-        for (int row = 1; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
-                JButton button = new JButton("Seat " + ((row - 1) * 4 + col + 1));
+        for (int row = 1; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                JButton button = new JButton("Seat " + dem);
+                dem++;
                 button.setMargin(new Insets(10, 10, 10, 10)); // Add space around the button text
 
                 // Set background color for VIP seats (center seats)
-                if (row == 2 && (col == 1 || col == 2)) {
+                if ((row == 2 && (col == 1 || col == 2 || col == 3))  || (row == 3 && (col == 1 || col == 2 || col == 3))) {
                     button.setBackground(Color.YELLOW);
                 }
-                // Add ActionListener to toggle the color of the seat when clicked
+
+                // Add ActionListener to toggle the color of the seat and calculate the total price
                 button.addActionListener(new ActionListener() {
                     private boolean isTaken = false;
                     private Color originalColor = button.getBackground();
-
-
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (isTaken) {
                             // If already taken, reset to original color
-
                             button.setBackground(originalColor);
                             button.setEnabled(true);
                             if (originalColor == Color.YELLOW) {
                                 total -= VIP_PRICE;
-                            }
-                            else {
+                            } else {
                                 total -= NORMAL_PRICE;
                             }
-
                         } else {
                             // Mark the seat as taken
                             button.setBackground(Color.RED);
                             button.setEnabled(true);
-                            if(originalColor == Color.YELLOW) {
+                            if (originalColor == Color.YELLOW) {
                                 total += VIP_PRICE;
-                            }
-                            else {
+                            } else {
                                 total += NORMAL_PRICE;
                             }
                         }
                         isTaken = !isTaken;
-                        System.out.println("Total Price: $" + total);
 
+                        // Update the total label
+                        totalLabel.setText("Total Price: $" + total);
                     }
                 });
 
@@ -81,13 +80,35 @@ public class CinemaTicketBookingApp extends JFrame {
             }
         }
 
+        // Create the total label
+        totalLabel = new JLabel("Total Price: $" + total);
+        totalLabel.setHorizontalAlignment(JLabel.CENTER);
+        add(totalLabel);
+        add(new JLabel());
+        add(new JLabel());
+        add(new JLabel());
+
+        check = new JButton("Done");
+        check.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call a separate method to handle the action and return the total
+                int result = handleDoneButtonClick();
+                System.out.println("Total Price: $" + result);
+            }
+        });
+        add(check);
 
         // Set frame properties
         setTitle("Cinema Ticket Booking");
-        setSize(500, 400); // Increased frame size to accommodate additional space
+        setSize(700, 500); // Increased frame size to accommodate additional space for the total label
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the frame on the screen
         setVisible(true);
+
+        ImageIcon image = new ImageIcon("MU.png");
+        setIconImage(image.getImage());
+
     }
 
 }
